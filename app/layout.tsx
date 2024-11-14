@@ -3,11 +3,13 @@ import "./globals.css";
 import { Providers } from "./providers";
 import '@rainbow-me/rainbowkit/styles.css';
 import { ThemeProvider } from "./theme-provider"
-import { Fredoka } from "next/font/google"
+// import { Fredoka } from "next/font/google"
 import { Toaster } from "sonner";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 
-const fredoka = Fredoka({ subsets: ['latin'] })
+// const fredoka = Fredoka({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: "CartooNFT",
@@ -22,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${fredoka.className} tracking-wide`}
+        className={`tracking-wide`}
       >
         <Providers>
         <ThemeProvider
@@ -32,6 +34,15 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Toaster richColors position="top-center" />
+            <nav className="flex justify-between p-6">
+              <div className="text-2xl font-bold">
+                HedgeFlow
+              </div>
+              <div className="flex justify-between space-x-4">
+                <ConnectButton />
+                <ThemeToggle />
+              </div>
+            </nav>
               {children}
         </ThemeProvider>
         </Providers>
