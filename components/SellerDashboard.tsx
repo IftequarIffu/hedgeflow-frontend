@@ -219,7 +219,7 @@ export default function SellerDashboard() {
       </section> */}
 
       <section className="space-y-4">
-        <h2 className="text-2xl font-bold">Earnings & Premium Payments</h2>
+        {/* <h2 className="text-2xl font-bold">Earnings & Premium Payments</h2> */}
         <div className="grid md:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
