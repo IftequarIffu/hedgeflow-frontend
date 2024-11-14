@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Wallet, Layers, DollarSign, ShieldCheck, Plus, CheckCircle, XCircle, Calendar, ArrowUpRight, CalendarDays, Clock } from 'lucide-react'
 import { Progress } from "@/components/ui/progress"
-import SellerDashboardContracts from './SellerContractsOverview'
 
 interface CDSOffer {
   id: string
