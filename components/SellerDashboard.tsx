@@ -2,14 +2,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Wallet, Layers, DollarSign, ShieldCheck, Plus, CheckCircle, XCircle, Calendar, ArrowUpRight } from 'lucide-react'
+import { Wallet, Layers, DollarSign, ShieldCheck, Plus, CheckCircle, XCircle, Calendar, ArrowUpRight, CalendarDays, Clock } from 'lucide-react'
 import { Progress } from "@/components/ui/progress"
+import SellerDashboardContracts from './SellerContractsOverview'
 
 interface CDSOffer {
   id: string
@@ -33,6 +34,13 @@ interface PremiumPayment {
   status: 'Received' | 'Pending'
 }
 
+interface Contract {
+    id: string
+    buyerName: string
+    buyerAddress: string
+    status: 'Active' | 'Pending' | 'Completed'
+  }
+
 export default function SellerDashboard() {
   const [isCreateOfferOpen, setIsCreateOfferOpen] = useState(false)
   const [offers, setOffers] = useState<CDSOffer[]>([
@@ -49,6 +57,18 @@ export default function SellerDashboard() {
     { id: '2', date: '2023-08-01', amount: 0.5, status: 'Received' },
     { id: '3', date: '2023-09-01', amount: 0.5, status: 'Pending' },
   ])
+
+  const [contracts, setContracts] = useState<Contract[]>([
+    { id: '1', buyerName: 'Alice Johnson', buyerAddress: '0xabcd...1234', status: 'Active' },
+    { id: '2', buyerName: 'Bob Smith', buyerAddress: '0xefgh...5678', status: 'Pending' },
+    { id: '3', buyerName: 'Charlie Brown', buyerAddress: '0xijkl...9012', status: 'Active' },
+    { id: '4', buyerName: 'David Lee', buyerAddress: '0xmnop...3456', status: 'Completed' },
+  ])
+
+  // Constants for all contracts
+  const coverageAmount = 10
+  const premiumRate = 20
+  const tenure = 12
 
   const totalActiveCDS = offers.filter(offer => offer.status === 'Active').length
   const totalCoverage = offers.reduce((sum, offer) => sum + offer.coverageAmount, 0)
@@ -80,13 +100,53 @@ export default function SellerDashboard() {
 
   return (
     <div className="container mx-auto p-6 space-y-8">
-      <header className="bg-primary text-primary-foreground p-6 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold mb-2">Welcome, Seller!</h1>
-        <p className="text-xl flex items-center">
-          <Wallet className="mr-2" />
-          Account: 0x1234...5678
-        </p>
-      </header>
+        <div className='flex space-x-6'>
+
+        {/* Welcome banner */}
+        <header className="bg-primary text-primary-foreground p-6 rounded-lg shadow-lg w-1/2">
+            <h1 className="text-3xl font-bold mb-2 bg-primary">Welcome, Seller!</h1>
+            <p className="text-xl flex items-center">
+            <Wallet className="mr-2" />
+            Account: 0x1234...5678
+            </p>
+        </header>
+
+        <div className='w-1/2'>
+            <Card>
+                <CardHeader>
+                <CardTitle>CDS Contract Details</CardTitle>
+                <CardDescription>These details apply to all your current contracts</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-6">
+                <div className="flex items-center space-x-4">
+                    <DollarSign className="h-5 w-5 text-muted-foreground" />
+                    <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Coverage Amount</p>
+                    <p className="text-sm text-muted-foreground">{coverageAmount} ETH</p>
+                    </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                    <CalendarDays className="h-5 w-5 text-muted-foreground" />
+                    <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Premium Rate</p>
+                    <p className="text-sm text-muted-foreground">{premiumRate}%</p>
+                    </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                    <Clock className="h-5 w-5 text-muted-foreground" />
+                    <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Tenure</p>
+                    <p className="text-sm text-muted-foreground">{tenure} months</p>
+                    </div>
+                </div>
+                </CardContent>
+            </Card>
+        </div>
+
+
+
+        </div>
+      
 
       <section className="grid md:grid-cols-4 gap-6">
         <Card>
@@ -127,76 +187,10 @@ export default function SellerDashboard() {
         </Card>
       </section>
 
-      <section>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">My CDS Offers / Active Contracts</h2>
-          <Dialog open={isCreateOfferOpen} onOpenChange={setIsCreateOfferOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" /> Create New Offer
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Create New CDS Offer</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleCreateOffer} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="coverageAmount">Coverage Amount (ETH)</Label>
-                  <Input id="coverageAmount" name="coverageAmount" type="number" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="premiumRate">Premium Rate (%)</Label>
-                  <Select name="premiumRate" required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select premium rate" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="10">10%</SelectItem>
-                      <SelectItem value="20">20%</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="tenure">Tenure (months)</Label>
-                  <Input id="tenure" name="tenure" type="number" required />
-                </div>
-                <Button type="submit" className="w-full">Create Offer</Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Offer ID</TableHead>
-              <TableHead>Coverage Amount (ETH)</TableHead>
-              <TableHead>Premium Rate</TableHead>
-              <TableHead>Tenure (months)</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {offers.map((offer) => (
-              <TableRow key={offer.id}>
-                <TableCell className="font-medium">{offer.id}</TableCell>
-                <TableCell>{offer.coverageAmount}</TableCell>
-                <TableCell>{offer.premiumRate}%</TableCell>
-                <TableCell>{offer.tenure}</TableCell>
-                <TableCell>{offer.status}</TableCell>
-                <TableCell>
-                  {offer.status === 'Active' && (
-                    <Button variant="outline" size="sm">Finalize</Button>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </section>
 
-      <section className="space-y-4">
+      {/* <SellerDashboardContracts /> */}
+
+      {/* <section className="space-y-4">
         <h2 className="text-2xl font-bold">Pending Requests</h2>
         <Table>
           <TableHeader>
@@ -223,11 +217,11 @@ export default function SellerDashboard() {
             ))}
           </TableBody>
         </Table>
-      </section>
+      </section> */}
 
       <section className="space-y-4">
         <h2 className="text-2xl font-bold">Earnings & Premium Payments</h2>
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
               <CardTitle>Premium Overview</CardTitle>
@@ -280,10 +274,34 @@ export default function SellerDashboard() {
               </Table>
             </CardContent>
           </Card>
+
+          <Card>
+          <CardHeader>
+              <CardTitle>Escrow and Coverage Status</CardTitle>
+            </CardHeader>
+          <CardContent className="pt-6">
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span>Active Coverage:</span>
+                  <span>{totalActiveCoverage} ETH</span>
+                </div>
+                <Progress value={(totalActiveCoverage / escrowBalance) * 100} className="h-2" />
+              </div>
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span>Available Coverage:</span>
+                  <span>{escrowBalance - totalActiveCoverage} ETH</span>
+                </div>
+                <Progress value={((escrowBalance - totalActiveCoverage) / escrowBalance) * 100} className="h-2" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         </div>
       </section>
 
-      <section className="space-y-4">
+      {/* <section className="space-y-4">
         <h2 className="text-2xl font-bold">Escrow & Coverage Status</h2>
         <Card>
           <CardContent className="pt-6">
@@ -305,7 +323,7 @@ export default function SellerDashboard() {
             </div>
           </CardContent>
         </Card>
-      </section>
+      </section> */}
     </div>
   )
 }
