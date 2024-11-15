@@ -3,21 +3,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { Shield, TrendingUp, BarChart3, Globe, ArrowRight } from 'lucide-react'
 import Link from "next/link"
+import LogoLink from "./LogoLink"
+import Navbar from "./Navbar"
 
 export default function LandingPage() {
   return (
     <div className="flex flex-col">
-        <nav className="flex justify-between p-6 sticky top-0">
-            <Link href={"/"}>
-              <div className="text-3xl font-extrabold font-sans">
-                HedgeFlow
-              </div>
-              </Link>
+        {/* <nav className="flex justify-between p-6 sticky top-0">
+              <LogoLink />
               <div className="flex justify-between space-x-4">
                 <ConnectButton />
-                {/* <ThemeToggle /> */}
               </div>
-            </nav>
+            </nav> */}
+        <Navbar />
       {/* Hero Section */}
       
       <section className="">

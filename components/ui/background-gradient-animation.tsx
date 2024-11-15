@@ -93,7 +93,7 @@ export const BackgroundGradientAnimation = ({
         containerClassName
       )}
     >
-      <svg className="hidden">
+      {/* <svg className="hidden">
         <defs>
           <filter id="blurMe">
             <feGaussianBlur
@@ -110,7 +110,7 @@ export const BackgroundGradientAnimation = ({
             <feBlend in="SourceGraphic" in2="goo" />
           </filter>
         </defs>
-      </svg>
+      </svg> */}
       <div className={cn("", className)}>{children}</div>
       <div
         className={cn(
