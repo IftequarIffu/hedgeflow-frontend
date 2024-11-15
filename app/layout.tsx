@@ -5,8 +5,6 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { ThemeProvider } from "./theme-provider"
 // import { Fredoka } from "next/font/google"
 import { Toaster } from "sonner";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 
 // const fredoka = Fredoka({ subsets: ['latin'] })
@@ -24,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`tracking-wide`}
+        className={`tracking-wide h-screen`}
       >
         <Providers>
         <ThemeProvider
