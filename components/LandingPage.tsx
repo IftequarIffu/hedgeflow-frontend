@@ -8,9 +8,11 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col">
         <nav className="flex justify-between p-6 sticky top-0">
+            <Link href={"/"}>
               <div className="text-3xl font-extrabold font-sans">
                 HedgeFlow
               </div>
+              </Link>
               <div className="flex justify-between space-x-4">
                 <ConnectButton />
                 {/* <ThemeToggle /> */}

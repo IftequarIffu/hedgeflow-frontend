@@ -3,7 +3,6 @@
 import LandingPage from "@/components/LandingPage";
 import SellerDashboard from "@/components/SellerDashboard";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
-import { Vortex } from "@/components/ui/vortex";
 
 
 export default function Home() {
