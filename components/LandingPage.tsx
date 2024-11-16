@@ -24,8 +24,8 @@ export default function LandingPage() {
             <h1 className="text-4xl lg:text-6xl font-bold mb-6 leading-tight">Revolutionizing Credit Default Swaps</h1>
             <p className="text-xl mb-8 opacity-90">Empower your investment strategy with our advanced CDS platform. Navigate market risks with confidence using cutting-edge technology and real-time data.</p>
             <Link href={"/cds-sellers"}>
-                <Button size="lg"  className="bg-[#8C64FF] hover:bg-[#8C64FF]/50 font-semibold">
-                Explore Our Platform
+                <Button size="lg"  className="bg-[#8C64FF] hover:bg-[#8C64FF]/50 font-semibold text-white">
+                Explore CDS Offers
                 </Button>
             </Link>
           </div>

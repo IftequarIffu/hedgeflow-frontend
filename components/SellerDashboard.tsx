@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Wallet, Layers, DollarSign, ShieldCheck, Plus, CheckCircle, XCircle, Calendar, ArrowUpRight, CalendarDays, Clock } from 'lucide-react'
 import { Progress } from "@/components/ui/progress"
+import Navbar from './Navbar'
+import { useAccount } from 'wagmi'
 
 interface CDSOffer {
   id: string
@@ -97,7 +99,10 @@ export default function SellerDashboard() {
     }
   }
 
+  const account = useAccount()
+
   return (
+    
     <div className="container mx-auto p-6 space-y-8">
         <div className='flex space-x-6'>
 
@@ -106,7 +111,7 @@ export default function SellerDashboard() {
             <h1 className="text-3xl font-bold mb-2 bg-primary">Welcome, Seller!</h1>
             <p className="text-xl flex items-center">
             <Wallet className="mr-2" />
-            Account: 0x1234...5678
+            Account: {`${account.address?.slice(0,4)}...${account.address?.slice(-4)}`}
             </p>
         </header>
 

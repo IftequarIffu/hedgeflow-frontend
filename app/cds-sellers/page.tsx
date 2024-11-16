@@ -13,7 +13,7 @@ const page = () => {
       //  </div>
 
       // <ContentLayout title="CDS Sellers">
-      <div className="bg-gradient-to-b from-black to-[#001152] h-screen w-full"><CDSSellerList /></div>
+      <div className="bg-gradient-to-b from-black to-[#001152] min-h-screen w-full"><CDSSellerList /></div>
     // </ContentLayout>
 
     // </BackgroundGradientAnimation>

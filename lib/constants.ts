@@ -4,302 +4,188 @@ export const IPFS_BASE_URL = 'https://ipfs.io/ipfs'
 
 export const categories = ['Pokemon', 'Tom & Jerry', 'Mickey Mouse', 'Bugs Bunny', 'Pink Panther', 'Dragon Ball Z', 'Naruto', 'Others']
 
-
-export const marketPlaceAbi = [
-    {
-        "type": "constructor",
-        "inputs": [
-            {
-                "name": "listingPrice",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "stateMutability": "nonpayable"
-    },
+export const abi = [
     {
         "type": "function",
-        "name": "getBasicNftContractAddress",
-        "inputs": [],
-        "outputs": [
+        "name": "buyCDS",
+        "inputs": [
             {
-                "name": "",
+                "name": "_seller",
                 "type": "address",
                 "internalType": "address"
             }
         ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "getListingPrice",
-        "inputs": [],
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "listNft",
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "outputs": [],
-        "stateMutability": "payable"
-    },
-    {
-        "type": "function",
-        "name": "s_basicNftContractAddress",
-        "inputs": [],
-        "outputs": [
-            {
-                "name": "",
-                "type": "address",
-                "internalType": "address"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "s_listingPrice",
-        "inputs": [],
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "s_owner",
-        "inputs": [],
-        "outputs": [
-            {
-                "name": "",
-                "type": "address",
-                "internalType": "address payable"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "updateListingPrice",
-        "inputs": [
-            {
-                "name": "newListingPrice",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
         "outputs": [],
         "stateMutability": "nonpayable"
-    }
-] as const
-
-export const basicNftAbi =  [
-    {
-        "type": "constructor",
-        "inputs": [],
-        "stateMutability": "nonpayable"
     },
     {
         "type": "function",
-        "name": "approve",
+        "name": "buyerContracts",
         "inputs": [
             {
-                "name": "to",
+                "name": "",
                 "type": "address",
                 "internalType": "address"
             },
             {
-                "name": "tokenId",
+                "name": "",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "buyer",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "premiumAmount",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "monthlyPremiumDueDate",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "missedPayments",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "isActive",
+                "type": "bool",
+                "internalType": "bool"
+            },
+            {
+                "name": "isDefaulted",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "buyers",
+        "inputs": [
+            {
+                "name": "",
                 "type": "uint256",
                 "internalType": "uint256"
             }
         ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
+        "outputs": [
+            {
+                "name": "",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "stateMutability": "view"
     },
     {
         "type": "function",
-        "name": "balanceOf",
+        "name": "cdsSellerDetails",
         "inputs": [
             {
-                "name": "owner",
+                "name": "",
                 "type": "address",
                 "internalType": "address"
             }
         ],
         "outputs": [
             {
-                "name": "",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "buyNft",
-        "inputs": [
+                "name": "sellerName",
+                "type": "string",
+                "internalType": "string"
+            },
             {
-                "name": "tokenId",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "outputs": [],
-        "stateMutability": "payable"
-    },
-    {
-        "type": "function",
-        "name": "getApproved",
-        "inputs": [
+                "name": "contractName",
+                "type": "string",
+                "internalType": "string"
+            },
             {
-                "name": "tokenId",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "",
+                "name": "sellerAddress",
                 "type": "address",
                 "internalType": "address"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "getListedNftsTokenIds",
-        "inputs": [],
-        "outputs": [
+            },
             {
-                "name": "",
-                "type": "uint256[]",
-                "internalType": "uint256[]"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "getMyLikedNftsTokenIds",
-        "inputs": [],
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256[]",
-                "internalType": "uint256[]"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "getMyNftsTokenIds",
-        "inputs": [],
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256[]",
-                "internalType": "uint256[]"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "getMyPurchasedNftsTokenIds",
-        "inputs": [],
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256[]",
-                "internalType": "uint256[]"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "getNftFromTokenId",
-        "inputs": [
-            {
-                "name": "tokenId",
+                "name": "coverageAmount",
                 "type": "uint256",
                 "internalType": "uint256"
+            },
+            {
+                "name": "premiumPercentage",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "tenureMonths",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "getAllSellerAddresses",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "address[]",
+                "internalType": "address[]"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "getSellerDetailsFromAddress",
+        "inputs": [
+            {
+                "name": "sellerAddress",
+                "type": "address",
+                "internalType": "address"
             }
         ],
         "outputs": [
             {
                 "name": "",
                 "type": "tuple",
-                "internalType": "struct BasicNft.NFT",
+                "internalType": "struct CreditDefaultSwap.CDSSeller",
                 "components": [
                     {
-                        "name": "tokenId",
-                        "type": "uint256",
-                        "internalType": "uint256"
-                    },
-                    {
-                        "name": "name",
+                        "name": "sellerName",
                         "type": "string",
                         "internalType": "string"
                     },
                     {
-                        "name": "isListed",
-                        "type": "bool",
-                        "internalType": "bool"
-                    },
-                    {
-                        "name": "isSold",
-                        "type": "bool",
-                        "internalType": "bool"
-                    },
-                    {
-                        "name": "price",
-                        "type": "uint256",
-                        "internalType": "uint256"
-                    },
-                    {
-                        "name": "tokenUri",
+                        "name": "contractName",
                         "type": "string",
                         "internalType": "string"
                     },
                     {
-                        "name": "owner",
+                        "name": "sellerAddress",
                         "type": "address",
                         "internalType": "address"
                     },
                     {
-                        "name": "category",
-                        "type": "string",
-                        "internalType": "string"
+                        "name": "coverageAmount",
+                        "type": "uint256",
+                        "internalType": "uint256"
                     },
                     {
-                        "name": "mintDate",
-                        "type": "string",
-                        "internalType": "string"
+                        "name": "premiumPercentage",
+                        "type": "uint256",
+                        "internalType": "uint256"
                     },
                     {
-                        "name": "numberOfLikes",
+                        "name": "tenureMonths",
                         "type": "uint256",
                         "internalType": "uint256"
                     }
@@ -310,7 +196,7 @@ export const basicNftAbi =  [
     },
     {
         "type": "function",
-        "name": "getTotalNftsCreated",
+        "name": "gracePeriodDays",
         "inputs": [],
         "outputs": [
             {
@@ -323,124 +209,11 @@ export const basicNftAbi =  [
     },
     {
         "type": "function",
-        "name": "isApprovedForAll",
-        "inputs": [
-            {
-                "name": "owner",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "operator",
-                "type": "address",
-                "internalType": "address"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "",
-                "type": "bool",
-                "internalType": "bool"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "likeOrUnlikeAnNft",
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
-    },
-    {
-        "type": "function",
-        "name": "mintNft",
-        "inputs": [
-            {
-                "name": "tokenUri",
-                "type": "string",
-                "internalType": "string"
-            },
-            {
-                "name": "name",
-                "type": "string",
-                "internalType": "string"
-            },
-            {
-                "name": "price",
-                "type": "uint256",
-                "internalType": "uint256"
-            },
-            {
-                "name": "category",
-                "type": "string",
-                "internalType": "string"
-            },
-            {
-                "name": "mintDate",
-                "type": "string",
-                "internalType": "string"
-            }
-        ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
-    },
-    {
-        "type": "function",
-        "name": "name",
+        "name": "maxMissedPayments",
         "inputs": [],
         "outputs": [
             {
                 "name": "",
-                "type": "string",
-                "internalType": "string"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "ownerOf",
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "",
-                "type": "address",
-                "internalType": "address"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "s_addressToLikedNftsTokenIds",
-        "inputs": [
-            {
-                "name": "",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "",
                 "type": "uint256",
                 "internalType": "uint256"
             }
@@ -449,84 +222,43 @@ export const basicNftAbi =  [
     },
     {
         "type": "function",
-        "name": "s_tokenIdToNft",
+        "name": "payPremium",
         "inputs": [
             {
-                "name": "",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "tokenId",
-                "type": "uint256",
-                "internalType": "uint256"
-            },
-            {
-                "name": "name",
-                "type": "string",
-                "internalType": "string"
-            },
-            {
-                "name": "isListed",
-                "type": "bool",
-                "internalType": "bool"
-            },
-            {
-                "name": "isSold",
-                "type": "bool",
-                "internalType": "bool"
-            },
-            {
-                "name": "price",
-                "type": "uint256",
-                "internalType": "uint256"
-            },
-            {
-                "name": "tokenUri",
-                "type": "string",
-                "internalType": "string"
-            },
-            {
-                "name": "owner",
+                "name": "_seller",
                 "type": "address",
                 "internalType": "address"
-            },
-            {
-                "name": "category",
-                "type": "string",
-                "internalType": "string"
-            },
-            {
-                "name": "mintDate",
-                "type": "string",
-                "internalType": "string"
-            },
-            {
-                "name": "numberOfLikes",
-                "type": "uint256",
-                "internalType": "uint256"
             }
         ],
-        "stateMutability": "view"
+        "outputs": [],
+        "stateMutability": "payable"
     },
     {
         "type": "function",
-        "name": "safeTransferFrom",
+        "name": "registerSellerOnPlatform",
         "inputs": [
             {
-                "name": "from",
-                "type": "address",
-                "internalType": "address"
+                "name": "_sellerName",
+                "type": "string",
+                "internalType": "string"
             },
             {
-                "name": "to",
-                "type": "address",
-                "internalType": "address"
+                "name": "_contractName",
+                "type": "string",
+                "internalType": "string"
             },
             {
-                "name": "tokenId",
+                "name": "_coverageAmount",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "_premiumPercentage",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "_tenureMonths",
                 "type": "uint256",
                 "internalType": "uint256"
             }
@@ -536,101 +268,22 @@ export const basicNftAbi =  [
     },
     {
         "type": "function",
-        "name": "safeTransferFrom",
-        "inputs": [
-            {
-                "name": "from",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "to",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "tokenId",
-                "type": "uint256",
-                "internalType": "uint256"
-            },
-            {
-                "name": "data",
-                "type": "bytes",
-                "internalType": "bytes"
-            }
-        ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
-    },
-    {
-        "type": "function",
-        "name": "setApprovalForAll",
-        "inputs": [
-            {
-                "name": "operator",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "approved",
-                "type": "bool",
-                "internalType": "bool"
-            }
-        ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
-    },
-    {
-        "type": "function",
-        "name": "setIsListed",
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
-    },
-    {
-        "type": "function",
-        "name": "supportsInterface",
-        "inputs": [
-            {
-                "name": "interfaceId",
-                "type": "bytes4",
-                "internalType": "bytes4"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "",
-                "type": "bool",
-                "internalType": "bool"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "symbol",
+        "name": "sellCDS",
         "inputs": [],
-        "outputs": [
-            {
-                "name": "",
-                "type": "string",
-                "internalType": "string"
-            }
-        ],
-        "stateMutability": "view"
+        "outputs": [],
+        "stateMutability": "payable"
     },
     {
         "type": "function",
-        "name": "tokenURI",
+        "name": "sellerBuyers",
         "inputs": [
             {
-                "name": "tokenId",
+                "name": "",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "",
                 "type": "uint256",
                 "internalType": "uint256"
             }
@@ -638,30 +291,39 @@ export const basicNftAbi =  [
         "outputs": [
             {
                 "name": "",
-                "type": "string",
-                "internalType": "string"
+                "type": "address",
+                "internalType": "address"
             }
         ],
         "stateMutability": "view"
     },
     {
         "type": "function",
-        "name": "transferFrom",
+        "name": "sellers",
         "inputs": [
             {
-                "name": "from",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "to",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "tokenId",
+                "name": "",
                 "type": "uint256",
                 "internalType": "uint256"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "terminateContract",
+        "inputs": [
+            {
+                "name": "_seller",
+                "type": "address",
+                "internalType": "address"
             }
         ],
         "outputs": [],
@@ -669,180 +331,109 @@ export const basicNftAbi =  [
     },
     {
         "type": "event",
-        "name": "Approval",
+        "name": "ContractDefaulted",
         "inputs": [
             {
-                "name": "owner",
+                "name": "buyer",
                 "type": "address",
                 "indexed": true,
                 "internalType": "address"
             },
             {
-                "name": "approved",
+                "name": "seller",
                 "type": "address",
                 "indexed": true,
                 "internalType": "address"
-            },
-            {
-                "name": "tokenId",
-                "type": "uint256",
-                "indexed": true,
-                "internalType": "uint256"
             }
         ],
         "anonymous": false
     },
     {
         "type": "event",
-        "name": "ApprovalForAll",
+        "name": "ContractRegistered",
         "inputs": [
             {
-                "name": "owner",
+                "name": "seller",
                 "type": "address",
                 "indexed": true,
                 "internalType": "address"
             },
             {
-                "name": "operator",
-                "type": "address",
-                "indexed": true,
-                "internalType": "address"
-            },
-            {
-                "name": "approved",
-                "type": "bool",
+                "name": "coverageAmount",
+                "type": "uint256",
                 "indexed": false,
-                "internalType": "bool"
+                "internalType": "uint256"
+            },
+            {
+                "name": "premiumPercentage",
+                "type": "uint256",
+                "indexed": false,
+                "internalType": "uint256"
             }
         ],
         "anonymous": false
     },
     {
         "type": "event",
-        "name": "Transfer",
+        "name": "ContractSold",
         "inputs": [
             {
-                "name": "from",
+                "name": "seller",
                 "type": "address",
                 "indexed": true,
                 "internalType": "address"
             },
             {
-                "name": "to",
-                "type": "address",
-                "indexed": true,
-                "internalType": "address"
-            },
-            {
-                "name": "tokenId",
+                "name": "coverageAmount",
                 "type": "uint256",
-                "indexed": true,
+                "indexed": false,
                 "internalType": "uint256"
             }
         ],
         "anonymous": false
     },
     {
-        "type": "error",
-        "name": "ERC721IncorrectOwner",
+        "type": "event",
+        "name": "ContractTerminated",
         "inputs": [
             {
-                "name": "sender",
+                "name": "buyer",
                 "type": "address",
+                "indexed": true,
                 "internalType": "address"
             },
             {
-                "name": "tokenId",
-                "type": "uint256",
-                "internalType": "uint256"
-            },
-            {
-                "name": "owner",
+                "name": "seller",
                 "type": "address",
+                "indexed": true,
                 "internalType": "address"
             }
-        ]
+        ],
+        "anonymous": false
     },
     {
-        "type": "error",
-        "name": "ERC721InsufficientApproval",
+        "type": "event",
+        "name": "PremiumPaid",
         "inputs": [
             {
-                "name": "operator",
+                "name": "buyer",
                 "type": "address",
+                "indexed": true,
                 "internalType": "address"
             },
             {
-                "name": "tokenId",
+                "name": "seller",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            },
+            {
+                "name": "amount",
                 "type": "uint256",
+                "indexed": false,
                 "internalType": "uint256"
             }
-        ]
-    },
-    {
-        "type": "error",
-        "name": "ERC721InvalidApprover",
-        "inputs": [
-            {
-                "name": "approver",
-                "type": "address",
-                "internalType": "address"
-            }
-        ]
-    },
-    {
-        "type": "error",
-        "name": "ERC721InvalidOperator",
-        "inputs": [
-            {
-                "name": "operator",
-                "type": "address",
-                "internalType": "address"
-            }
-        ]
-    },
-    {
-        "type": "error",
-        "name": "ERC721InvalidOwner",
-        "inputs": [
-            {
-                "name": "owner",
-                "type": "address",
-                "internalType": "address"
-            }
-        ]
-    },
-    {
-        "type": "error",
-        "name": "ERC721InvalidReceiver",
-        "inputs": [
-            {
-                "name": "receiver",
-                "type": "address",
-                "internalType": "address"
-            }
-        ]
-    },
-    {
-        "type": "error",
-        "name": "ERC721InvalidSender",
-        "inputs": [
-            {
-                "name": "sender",
-                "type": "address",
-                "internalType": "address"
-            }
-        ]
-    },
-    {
-        "type": "error",
-        "name": "ERC721NonexistentToken",
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ]
+        ],
+        "anonymous": false
     }
 ] as const

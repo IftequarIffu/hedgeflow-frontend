@@ -1,4 +1,6 @@
-import React, { useState, useMemo } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useState, useMemo, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -7,12 +9,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Wallet, DollarSign, Calendar } from 'lucide-react'
 import Link from 'next/link'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-import LogoLink from './LogoLink'
 import Navbar from './Navbar'
 import { PlusCircleIcon } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
 import { toast } from 'sonner'
+import { DashboardIcon } from '@radix-ui/react-icons'
+import { useReadContract } from 'wagmi'
+import { abi } from '@/lib/constants'
+import { readContract, writeContract } from '@wagmi/core'
+import { config } from '@/lib/wagmiConfig'
+import { useAccount } from 'wagmi'
 
 interface CDSSeller {
   sellerAddress: string
@@ -20,15 +26,15 @@ interface CDSSeller {
   premiumPercentage: number
   tenureMonths: number
   sellerName: string
-  nameOfCDSContract: string
+  contractName: string
 }
 
 const sampleSellers: CDSSeller[] = [
-  { sellerAddress: "0x1234...5678", coverageAmount: 100, premiumPercentage: 10, tenureMonths: 12, sellerName: "Alice Finance", nameOfCDSContract: "Stable Yield CDS" },
-  { sellerAddress: "0xabcd...efgh", coverageAmount: 200, premiumPercentage: 20, tenureMonths: 24, sellerName: "Bob Investments", nameOfCDSContract: "High Yield CDS" },
-  { sellerAddress: "0x9876...5432", coverageAmount: 150, premiumPercentage: 10, tenureMonths: 18, sellerName: "Charlie Capital", nameOfCDSContract: "Balanced Risk CDS" },
-  { sellerAddress: "0xijkl...mnop", coverageAmount: 300, premiumPercentage: 20, tenureMonths: 36, sellerName: "David Securities", nameOfCDSContract: "Long-term Protection CDS" },
-  { sellerAddress: "0x2468...1357", coverageAmount: 50, premiumPercentage: 10, tenureMonths: 6, sellerName: "Eve Traders", nameOfCDSContract: "Short-term Hedge CDS" },
+  { sellerAddress: "0x1234...5678", coverageAmount: 100, premiumPercentage: 10, tenureMonths: 12, sellerName: "Alice Finance", contractName: "Stable Yield CDS" },
+  { sellerAddress: "0xabcd...efgh", coverageAmount: 200, premiumPercentage: 20, tenureMonths: 24, sellerName: "Bob Investments", contractName: "High Yield CDS" },
+  { sellerAddress: "0x9876...5432", coverageAmount: 150, premiumPercentage: 10, tenureMonths: 18, sellerName: "Charlie Capital", contractName: "Balanced Risk CDS" },
+  { sellerAddress: "0xijkl...mnop", coverageAmount: 300, premiumPercentage: 20, tenureMonths: 36, sellerName: "David Securities", contractName: "Long-term Protection CDS" },
+  { sellerAddress: "0x2468...1357", coverageAmount: 50, premiumPercentage: 10, tenureMonths: 6, sellerName: "Eve Traders", contractName: "Short-term Hedge CDS" },
 ]
 
 const CDSSellerCard: React.FC<{ seller: CDSSeller }> = ({ seller }) => (
@@ -40,7 +46,7 @@ const CDSSellerCard: React.FC<{ seller: CDSSeller }> = ({ seller }) => (
       </CardTitle>
     </CardHeader>
     <CardContent>
-      <h3 className="font-semibold mb-2">{seller.nameOfCDSContract}</h3>
+      <h3 className="font-semibold mb-2">{seller.contractName}</h3>
       <div className="space-y-2">
         <div className="flex items-center">
           <Wallet className="mr-2 h-4 w-4" />
@@ -71,6 +77,8 @@ export default function CDSSellerList() {
   const [sortBy, setSortBy] = useState<keyof CDSSeller | null>(null)
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [createCDSLoading, setCreateCDSLoading] = useState(false)
+  const account = useAccount()
   const [newCDS, setNewCDS] = useState({
     sellerName: '',
     nameOfCDSContract: '',
@@ -84,13 +92,25 @@ export default function CDSSellerList() {
     setNewCDS(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleCreateCDS = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleCreateCDS = async (e: React.FormEvent) => {
+
+    try {
+
+      setCreateCDSLoading(true)
+      e.preventDefault()
     const newSeller: CDSSeller = {
       ...newCDS,
-      sellerAddress: `0x${Math.random().toString(16).substr(2, 8)}...${Math.random().toString(16).substr(2, 4)}`,
+      sellerAddress: account.address as `0x${string}`,
     }
-    setSellers(prev => [...prev, newSeller])
+
+      await writeContract(config, {
+        abi: abi,
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+        functionName: 'registerSellerOnPlatform',
+        args: [newCDS.sellerName, newCDS.nameOfCDSContract, BigInt(newCDS.coverageAmount), BigInt(newCDS.premiumPercentage), BigInt(newCDS.tenureMonths)]
+      })
+
+    // setSellers(prev => [...prev, newSeller])
     setIsModalOpen(false)
     setNewCDS({
       sellerName: '',
@@ -99,11 +119,75 @@ export default function CDSSellerList() {
       premiumPercentage: 0,
       tenureMonths: 0,
     })
-    toast({
-      title: "CDS Contract Created",
-      description: "Your new CDS contract has been successfully added.",
-    })
+    setCreateCDSLoading(false)
+    toast.success("CDS Contract created")
+      
+    } catch (error) {
+      console.log("Error: ", error)
+    }
+    
   }
+
+  const [sellersDetails, setSellersDetails] = useState<any[] | undefined>(undefined)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+
+    async function getSellerAddresses() {
+      const sellerAddresses = await readContract(config, {
+        abi: abi,
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+        functionName: 'getAllSellerAddresses'
+      })
+
+      return sellerAddresses;
+    }
+
+    async function getSellerDetailsByAddress(address: `0x${string}`) {
+      const sellerDetails = await readContract(config, {
+        abi: abi,
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+        functionName: 'getSellerDetailsFromAddress',
+        args: [address]
+      })
+
+      return sellerDetails;
+    }
+
+
+    const getAllSellerDetails = async() => {
+
+      try {
+
+        setLoading(true);
+        const sellers = await getSellerAddresses();
+
+        console.log("Seller Addresses: ", sellers)
+      
+        const sellersDetails = await Promise.all(
+          sellers.map((address) => getSellerDetailsByAddress(address))
+        );
+
+        setSellersDetails(sellersDetails)
+        console.log("Seller Details: ", sellersDetails)
+      } catch (error) {
+        console.error('Error fetching seller details:', error);
+
+      }
+      finally{
+        setLoading(false)
+      }
+
+      return sellersDetails;
+    }
+
+    getAllSellerDetails();
+
+
+  }, [])
+
+
+
 
   const filteredAndSortedSellers = useMemo(() => {
     return sellers
@@ -134,7 +218,17 @@ export default function CDSSellerList() {
     <Navbar />
     <div className="container mx-auto px-6 grid grid-cols-5 gap-4">
       
-      <div className='col-span-1 border-r-2'>
+      <div className='col-span-1 border-r-2 sticky top-0'>
+
+        <div className='mt-14'>
+        <Link href="/dashboard" prefetch={true}>
+        <Button className=' flex justify-center items-center'>
+          {/* <ChevronLeft /> */}
+          <DashboardIcon />
+          <p className='font-sans'>Go to Dashboard</p>
+        </Button>
+        </Link>
+        </div>
 
 
         <div className='pe-6 mt-10 space-y-4'>
@@ -202,7 +296,7 @@ export default function CDSSellerList() {
         </div>
         
         
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid grid-cols-3 gap-4 pb-4'>
         {/* <Card className="w-full flex justify-center items-center">
             
               <PlusCircleIcon className='w-full h-20' />
@@ -289,7 +383,7 @@ export default function CDSSellerList() {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit">Create CDS Contract</Button>
+                    <Button type="submit" disabled={createCDSLoading}>Create CDS Contract</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
