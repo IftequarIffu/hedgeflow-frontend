@@ -107,8 +107,8 @@ export default function SellerDashboard() {
         <div className='flex space-x-6'>
 
         {/* Welcome banner */}
-        <header className="bg-primary text-primary-foreground p-6 rounded-lg shadow-lg w-1/2">
-            <h1 className="text-3xl font-bold mb-2 bg-primary">Welcome, Seller!</h1>
+        <header className="bg-purple-800 text-white p-6 rounded-lg shadow-lg w-1/2">
+            <h1 className="text-3xl font-bold mb-2  ">Welcome, Seller!</h1>
             <p className="text-xl flex items-center">
             <Wallet className="mr-2" />
             Account: {`${account.address?.slice(0,4)}...${account.address?.slice(-4)}`}

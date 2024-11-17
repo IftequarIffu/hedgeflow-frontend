@@ -286,15 +286,14 @@ export default function CDSSellerList() {
       
       <div className='col-span-1 border-r-2 sticky top-0'>
 
-        <div className='mt-14'>
+        {/* <div className='mt-14'>
         <Link href="/dashboard" prefetch={true}>
         <Button className=' flex justify-center items-center'>
-          {/* <ChevronLeft /> */}
           <DashboardIcon />
           <p className='font-sans'>Go to Dashboard</p>
         </Button>
         </Link>
-        </div>
+        </div> */}
 
 
         <div className='pe-6 mt-10 space-y-4'>
@@ -454,7 +453,7 @@ export default function CDSSellerList() {
                 </form>
               </DialogContent>
             </Dialog>
-          {sellersDetails?.map((seller, index) => (
+          {filteredAndSortedSellers?.map((seller, index) => (
             <CDSSellerCard key={index} seller={seller} />
           ))}
         </div>
