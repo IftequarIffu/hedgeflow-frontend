@@ -14,11 +14,10 @@ import { PlusCircleIcon } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
 import { toast } from 'sonner'
 import { DashboardIcon } from '@radix-ui/react-icons'
-import { useReadContract } from 'wagmi'
 import { abi } from '@/lib/constants'
-import { readContract, writeContract } from '@wagmi/core'
+import { readContract, simulateContract, writeContract } from '@wagmi/core'
 import { config } from '@/lib/wagmiConfig'
-import { useAccount } from 'wagmi'
+import { useAccount, useReadContract } from 'wagmi'
 
 interface CDSSeller {
   sellerAddress: string
@@ -42,7 +41,7 @@ const CDSSellerCard: React.FC<{ seller: CDSSeller }> = ({ seller }) => (
     <CardHeader>
       <CardTitle className="flex justify-between items-center">
         <span className='text-lg'>{seller.sellerName}</span>
-        <span className="text-sm text-muted-foreground">{seller.sellerAddress}</span>
+        <span className="text-sm text-muted-foreground">{`${seller.sellerAddress.slice(0,4)}...${seller.sellerAddress.slice(-4)}`}</span>
       </CardTitle>
     </CardHeader>
     <CardContent>
@@ -103,12 +102,15 @@ export default function CDSSellerList() {
       sellerAddress: account.address as `0x${string}`,
     }
 
-      await writeContract(config, {
+      const {request} = await simulateContract(config, {
         abi: abi,
         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
         functionName: 'registerSellerOnPlatform',
         args: [newCDS.sellerName, newCDS.nameOfCDSContract, BigInt(newCDS.coverageAmount), BigInt(newCDS.premiumPercentage), BigInt(newCDS.tenureMonths)]
       })
+
+      const hash = await writeContract(config, request)
+      console.log("TxHash: ", hash)
 
     // setSellers(prev => [...prev, newSeller])
     setIsModalOpen(false)
@@ -131,60 +133,124 @@ export default function CDSSellerList() {
   const [sellersDetails, setSellersDetails] = useState<any[] | undefined>(undefined)
   const [loading, setLoading] = useState(false)
 
+  const sellerAddresses =  useReadContract({
+    abi: abi,
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    functionName: 'getAllSellerAddresses',
+    account: account.address
+  }).data;
+
+  console.log("Sellers Addresses from hooks: ", sellerAddresses)
+
+
   useEffect(() => {
 
-    async function getSellerAddresses() {
-      const sellerAddresses = await readContract(config, {
-        abi: abi,
-        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-        functionName: 'getAllSellerAddresses'
-      })
+      async function getSellerDetailsByAddress(address: `0x${string}`) {
+        const sellerDetails = await readContract(config, {
+          abi: abi,
+          address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+          functionName: 'getSellerDetailsFromAddress',
+          args: [address],
+          account: account.address
+        })
 
-      return sellerAddresses;
-    }
+        return sellerDetails;
+      }
 
-    async function getSellerDetailsByAddress(address: `0x${string}`) {
-      const sellerDetails = await readContract(config, {
-        abi: abi,
-        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-        functionName: 'getSellerDetailsFromAddress',
-        args: [address]
-      })
+    const fetchSellerDetails = async () => {
+      if (!sellerAddresses) return;
 
-      return sellerDetails;
-    }
+      const details = await Promise.all(
+        sellerAddresses.map(async (sellerAddress) => {
+          const sellerDetails = await readContract(config, {
+                  abi: abi,
+                  address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+                  functionName: 'getSellerDetailsFromAddress',
+                  args: [sellerAddress],
+                  account: account.address
+                })
+
+          return sellerDetails;
+        })
+      );
+
+      setSellersDetails(details);
+    };
+
+    fetchSellerDetails();
+  }, [account.address, sellerAddresses]);
+
+  console.log("Sellers Details from hooks: ", sellersDetails)
+
+  // useEffect(() => {
+
+  //   async function getSellerAddresses() {
+  //     try {
+  //       const sellerAddresses = await readContract(config, {
+  //         abi: abi,
+  //         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+  //         functionName: 'getAllSellerAddresses',
+  //         account: account.address
+  //       });
+
+  //       console.log("Seller Addresses: ", sellerAddresses)
+    
+  //       if (!sellerAddresses || sellerAddresses.length === 0) {
+  //         console.error("No seller addresses found.");
+  //         return [];
+  //       }
+    
+  //       return sellerAddresses;
+  //     } catch (error) {
+  //       console.error("Error fetching seller addresses:", error);
+  //       return [];
+  //     }
+  //   }
+    
+
+  //   async function getSellerDetailsByAddress(address: `0x${string}`) {
+  //     const sellerDetails = await readContract(config, {
+  //       abi: abi,
+  //       address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+  //       functionName: 'getSellerDetailsFromAddress',
+  //       args: [address],
+  //       account: account.address
+  //     })
+
+  //     return sellerDetails;
+  //   }
 
 
-    const getAllSellerDetails = async() => {
+  //   const getAllSellerDetails = async() => {
 
-      try {
+  //     try {
 
-        setLoading(true);
-        const sellers = await getSellerAddresses();
+  //       setLoading(true);
+  //       const sellers = await getSellerAddresses();
 
-        console.log("Seller Addresses: ", sellers)
+  //       console.log("Seller Addresses: ", sellers)
       
-        const sellersDetails = await Promise.all(
-          sellers.map((address) => getSellerDetailsByAddress(address))
-        );
+  //       const sellersDetails = await Promise.all(
+  //         sellers.map((address) => getSellerDetailsByAddress(address))
+  //       );
 
-        setSellersDetails(sellersDetails)
-        console.log("Seller Details: ", sellersDetails)
-      } catch (error) {
-        console.error('Error fetching seller details:', error);
+  //       setSellersDetails(sellersDetails)
+  //       console.log("Seller Details: ", sellersDetails)
+  //     } catch (error) {
+  //       console.error('Error fetching seller details:', error);
 
-      }
-      finally{
-        setLoading(false)
-      }
+  //     }
+  //     finally{
+  //       setLoading(false)
+  //     }
 
-      return sellersDetails;
-    }
+  //     return sellersDetails;
+  //   }
 
-    getAllSellerDetails();
+  //   getAllSellerDetails();
 
 
-  }, [])
+  // }, [])
 
 
 
@@ -193,7 +259,7 @@ export default function CDSSellerList() {
     return sellers
       .filter(seller => 
         seller.sellerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        seller.nameOfCDSContract.toLowerCase().includes(searchTerm.toLowerCase())
+        seller.contractName.toLowerCase().includes(searchTerm.toLowerCase())
       )
       .filter(seller => 
         seller.coverageAmount >= coverageFilter[0] && seller.coverageAmount <= coverageFilter[1]
@@ -388,7 +454,7 @@ export default function CDSSellerList() {
                 </form>
               </DialogContent>
             </Dialog>
-          {filteredAndSortedSellers.map((seller, index) => (
+          {sellersDetails?.map((seller, index) => (
             <CDSSellerCard key={index} seller={seller} />
           ))}
         </div>

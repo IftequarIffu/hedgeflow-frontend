@@ -9,6 +9,9 @@ import {
   anvil
 } from 'wagmi/chains';
 
+import { anvil as anvilChain } from '@wagmi/core/chains'
+import { http, createConfig } from '@wagmi/core';
+
 export const config = getDefaultConfig({
   appName: 'Iffu Dapps',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
