@@ -20,21 +20,21 @@ import { config } from '@/lib/wagmiConfig'
 import { useAccount, useReadContract } from 'wagmi'
 
 interface CDSSeller {
-  sellerAddress: string
-  coverageAmount: number
-  premiumPercentage: number
-  tenureMonths: number
+  sellerAddress: `0x${string}`
+  coverageAmount: bigint
+  premiumPercentage: bigint
+  tenureMonths: bigint
   sellerName: string
   contractName: string
 }
 
-const sampleSellers: CDSSeller[] = [
-  { sellerAddress: "0x1234...5678", coverageAmount: 100, premiumPercentage: 10, tenureMonths: 12, sellerName: "Alice Finance", contractName: "Stable Yield CDS" },
-  { sellerAddress: "0xabcd...efgh", coverageAmount: 200, premiumPercentage: 20, tenureMonths: 24, sellerName: "Bob Investments", contractName: "High Yield CDS" },
-  { sellerAddress: "0x9876...5432", coverageAmount: 150, premiumPercentage: 10, tenureMonths: 18, sellerName: "Charlie Capital", contractName: "Balanced Risk CDS" },
-  { sellerAddress: "0xijkl...mnop", coverageAmount: 300, premiumPercentage: 20, tenureMonths: 36, sellerName: "David Securities", contractName: "Long-term Protection CDS" },
-  { sellerAddress: "0x2468...1357", coverageAmount: 50, premiumPercentage: 10, tenureMonths: 6, sellerName: "Eve Traders", contractName: "Short-term Hedge CDS" },
-]
+// const sampleSellers: CDSSeller[] = [
+//   { sellerAddress: "0x1234...5678", coverageAmount: 100, premiumPercentage: 10, tenureMonths: 12, sellerName: "Alice Finance", contractName: "Stable Yield CDS" },
+//   { sellerAddress: "0xabcd...efgh", coverageAmount: 200, premiumPercentage: 20, tenureMonths: 24, sellerName: "Bob Investments", contractName: "High Yield CDS" },
+//   { sellerAddress: "0x9876...5432", coverageAmount: 150, premiumPercentage: 10, tenureMonths: 18, sellerName: "Charlie Capital", contractName: "Balanced Risk CDS" },
+//   { sellerAddress: "0xijkl...mnop", coverageAmount: 300, premiumPercentage: 20, tenureMonths: 36, sellerName: "David Securities", contractName: "Long-term Protection CDS" },
+//   { sellerAddress: "0x2468...1357", coverageAmount: 50, premiumPercentage: 10, tenureMonths: 6, sellerName: "Eve Traders", contractName: "Short-term Hedge CDS" },
+// ]
 
 const CDSSellerCard: React.FC<{ seller: CDSSeller }> = ({ seller }) => (
   <Card className="w-full">
@@ -49,15 +49,15 @@ const CDSSellerCard: React.FC<{ seller: CDSSeller }> = ({ seller }) => (
       <div className="space-y-2">
         <div className="flex items-center">
           <Wallet className="mr-2 h-4 w-4" />
-          <span className="text-sm">Coverage: {seller.coverageAmount} ETH</span>
+          <span className="text-sm">Coverage: {Number(seller.coverageAmount)} ETH</span>
         </div>
         <div className="flex items-center">
           <DollarSign className="mr-2 h-4 w-4" />
-          <span className="text-sm">Premium: {seller.premiumPercentage}%</span>
+          <span className="text-sm">Premium: {Number(seller.premiumPercentage)}%</span>
         </div>
         <div className="flex items-center">
           <Calendar className="mr-2 h-4 w-4" />
-          <span className="text-sm">Tenure: {seller.tenureMonths} months</span>
+          <span className="text-sm">Tenure: {Number(seller.tenureMonths)} months</span>
         </div>
       </div>
     </CardContent>
@@ -68,7 +68,7 @@ const CDSSellerCard: React.FC<{ seller: CDSSeller }> = ({ seller }) => (
 )
 
 export default function CDSSellerList() {
-  const [sellers, setSellers] = useState<CDSSeller[]>(sampleSellers)
+  const [sellers, setSellers] = useState<CDSSeller[] | undefined>(undefined)
   const [searchTerm, setSearchTerm] = useState('')
   const [coverageFilter, setCoverageFilter] = useState<[number, number]>([0, 300])
   const [premiumFilter, setPremiumFilter] = useState<number | null>(null)
@@ -122,6 +122,7 @@ export default function CDSSellerList() {
       tenureMonths: 0,
     })
     setCreateCDSLoading(false)
+    setFetchToggle((prev) => !prev)
     toast.success("CDS Contract created")
       
     } catch (error) {
@@ -130,7 +131,7 @@ export default function CDSSellerList() {
     
   }
 
-  const [sellersDetails, setSellersDetails] = useState<any[] | undefined>(undefined)
+  const [sellersDetails, setSellersDetails] = useState<CDSSeller[] | undefined>(undefined)
   const [loading, setLoading] = useState(false)
 
   const sellerAddresses =  useReadContract({
@@ -141,6 +142,8 @@ export default function CDSSellerList() {
   }).data;
 
   console.log("Sellers Addresses from hooks: ", sellerAddresses)
+
+  const [fetchToggle, setFetchToggle] = useState(false)
 
 
   useEffect(() => {
@@ -178,97 +181,25 @@ export default function CDSSellerList() {
     };
 
     fetchSellerDetails();
-  }, [account.address, sellerAddresses]);
+  }, [account.address, sellerAddresses, fetchToggle]);
 
   console.log("Sellers Details from hooks: ", sellersDetails)
-
-  // useEffect(() => {
-
-  //   async function getSellerAddresses() {
-  //     try {
-  //       const sellerAddresses = await readContract(config, {
-  //         abi: abi,
-  //         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-  //         functionName: 'getAllSellerAddresses',
-  //         account: account.address
-  //       });
-
-  //       console.log("Seller Addresses: ", sellerAddresses)
-    
-  //       if (!sellerAddresses || sellerAddresses.length === 0) {
-  //         console.error("No seller addresses found.");
-  //         return [];
-  //       }
-    
-  //       return sellerAddresses;
-  //     } catch (error) {
-  //       console.error("Error fetching seller addresses:", error);
-  //       return [];
-  //     }
-  //   }
-    
-
-  //   async function getSellerDetailsByAddress(address: `0x${string}`) {
-  //     const sellerDetails = await readContract(config, {
-  //       abi: abi,
-  //       address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-  //       functionName: 'getSellerDetailsFromAddress',
-  //       args: [address],
-  //       account: account.address
-  //     })
-
-  //     return sellerDetails;
-  //   }
-
-
-  //   const getAllSellerDetails = async() => {
-
-  //     try {
-
-  //       setLoading(true);
-  //       const sellers = await getSellerAddresses();
-
-  //       console.log("Seller Addresses: ", sellers)
-      
-  //       const sellersDetails = await Promise.all(
-  //         sellers.map((address) => getSellerDetailsByAddress(address))
-  //       );
-
-  //       setSellersDetails(sellersDetails)
-  //       console.log("Seller Details: ", sellersDetails)
-  //     } catch (error) {
-  //       console.error('Error fetching seller details:', error);
-
-  //     }
-  //     finally{
-  //       setLoading(false)
-  //     }
-
-  //     return sellersDetails;
-  //   }
-
-  //   getAllSellerDetails();
-
-
-  // }, [])
-
 
 
 
   const filteredAndSortedSellers = useMemo(() => {
-    return sellers
-      .filter(seller => 
-        seller.sellerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    return sellersDetails?.filter(seller => 
+        searchTerm == "" || searchTerm === null || seller.sellerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         seller.contractName.toLowerCase().includes(searchTerm.toLowerCase())
       )
       .filter(seller => 
-        seller.coverageAmount >= coverageFilter[0] && seller.coverageAmount <= coverageFilter[1]
+        Number(seller.coverageAmount) >= coverageFilter[0] && Number(seller.coverageAmount) <= coverageFilter[1]
       )
       .filter(seller => 
-        premiumFilter === null || seller.premiumPercentage === premiumFilter
+        premiumFilter === null || Number(seller.premiumPercentage) === premiumFilter
       )
       .filter(seller => 
-        seller.tenureMonths >= tenureFilter[0] && seller.tenureMonths <= tenureFilter[1]
+        Number(seller.tenureMonths) >= tenureFilter[0] && Number(seller.tenureMonths) <= tenureFilter[1]
       )
       .sort((a, b) => {
         if (!sortBy) return 0
@@ -276,7 +207,7 @@ export default function CDSSellerList() {
         if (a[sortBy] > b[sortBy]) return sortOrder === 'asc' ? 1 : -1
         return 0
       })
-  }, [sellers, searchTerm, coverageFilter, premiumFilter, tenureFilter, sortBy, sortOrder])
+  }, [sellersDetails, searchTerm, coverageFilter, premiumFilter, tenureFilter, sortBy, sortOrder])
 
   return (
 
@@ -285,15 +216,6 @@ export default function CDSSellerList() {
     <div className="container mx-auto px-6 grid grid-cols-5 gap-4">
       
       <div className='col-span-1 border-r-2 sticky top-0'>
-
-        {/* <div className='mt-14'>
-        <Link href="/dashboard" prefetch={true}>
-        <Button className=' flex justify-center items-center'>
-          <DashboardIcon />
-          <p className='font-sans'>Go to Dashboard</p>
-        </Button>
-        </Link>
-        </div> */}
 
 
         <div className='pe-6 mt-10 space-y-4'>
@@ -362,11 +284,7 @@ export default function CDSSellerList() {
         
         
         <div className='grid grid-cols-3 gap-4 pb-4'>
-        {/* <Card className="w-full flex justify-center items-center">
-            
-              <PlusCircleIcon className='w-full h-20' />
-            
-          </Card> */}
+       
 
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
               <DialogTrigger asChild>
@@ -460,64 +378,6 @@ export default function CDSSellerList() {
       
       </div>
       
-      
-
-      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-4">
-          <Label>Coverage Amount (ETH)</Label>
-          <Slider
-            min={0}
-            max={300}
-            step={10}
-            value={coverageFilter}
-            onValueChange={setCoverageFilter}
-            className=''
-          />
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>{coverageFilter[0]} ETH</span>
-            <span>{coverageFilter[1]} ETH</span>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <Label>Premium Percentage</Label>
-          <Select onValueChange={(value) => setPremiumFilter(value ? parseInt(value) : null)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select premium %" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="any">Any</SelectItem>
-              <SelectItem value="10">10%</SelectItem>
-              <SelectItem value="20">20%</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-4">
-          <Label>Tenure (Months)</Label>
-          <Slider
-            min={0}
-            max={36}
-            step={1}
-            value={tenureFilter}
-            onValueChange={setTenureFilter}
-          />
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>{tenureFilter[0]} months</span>
-            <span>{tenureFilter[1]} months</span>
-          </div>
-        </div>
-      </div> */}
-
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredAndSortedSellers.map((seller, index) => (
-          <CDSSellerCard key={index} seller={seller} />
-        ))}
-      </div> */}
-
-      {/* {filteredAndSortedSellers.length === 0 && (
-        <p className="text-center text-muted-foreground">No CDS sellers found matching your criteria.</p>
-      )} */}
     </div>
 
     </>
